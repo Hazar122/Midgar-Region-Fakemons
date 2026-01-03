@@ -109,13 +109,14 @@
             </div>
           </div>
           <div class="pokemon-card-body">
-            <div class="stats-grid">
-              <div class="stat-box"><div class="stat-box-label">HP</div><div class="stat-box-value">${pokemon.baseStats.hp}</div></div>
-              <div class="stat-box"><div class="stat-box-label">Atk</div><div class="stat-box-value">${pokemon.baseStats.attack}</div></div>
-              <div class="stat-box"><div class="stat-box-label">Def</div><div class="stat-box-value">${pokemon.baseStats.defense}</div></div>
-              <div class="stat-box"><div class="stat-box-label">SpA</div><div class="stat-box-value">${pokemon.baseStats.spAttack}</div></div>
-              <div class="stat-box"><div class="stat-box-label">SpD</div><div class="stat-box-value">${pokemon.baseStats.spDefense}</div></div>
-              <div class="stat-box bst"><div class="stat-box-label">Total</div><div class="stat-box-value">${pokemon.bst}</div></div>
+            <div class="stats-container">
+              <div class="stat-row"><span class="stat-label">HP</span><span class="stat-value">${pokemon.baseStats.hp}</span><div class="stat-bar-bg"><div class="stat-bar stat-hp" style="width: ${Math.min(100, pokemon.baseStats.hp / 255 * 100)}%"></div></div></div>
+              <div class="stat-row"><span class="stat-label">Atk</span><span class="stat-value">${pokemon.baseStats.attack}</span><div class="stat-bar-bg"><div class="stat-bar stat-atk" style="width: ${Math.min(100, pokemon.baseStats.attack / 255 * 100)}%"></div></div></div>
+              <div class="stat-row"><span class="stat-label">Def</span><span class="stat-value">${pokemon.baseStats.defense}</span><div class="stat-bar-bg"><div class="stat-bar stat-def" style="width: ${Math.min(100, pokemon.baseStats.defense / 255 * 100)}%"></div></div></div>
+              <div class="stat-row"><span class="stat-label">SpA</span><span class="stat-value">${pokemon.baseStats.spAttack}</span><div class="stat-bar-bg"><div class="stat-bar stat-spa" style="width: ${Math.min(100, pokemon.baseStats.spAttack / 255 * 100)}%"></div></div></div>
+              <div class="stat-row"><span class="stat-label">SpD</span><span class="stat-value">${pokemon.baseStats.spDefense}</span><div class="stat-bar-bg"><div class="stat-bar stat-spd" style="width: ${Math.min(100, pokemon.baseStats.spDefense / 255 * 100)}%"></div></div></div>
+              <div class="stat-row"><span class="stat-label">Spe</span><span class="stat-value">${pokemon.baseStats.speed}</span><div class="stat-bar-bg"><div class="stat-bar stat-spe" style="width: ${Math.min(100, pokemon.baseStats.speed / 255 * 100)}%"></div></div></div>
+              <div class="stat-row stat-total"><span class="stat-label">Total</span><span class="stat-value">${pokemon.bst}</span><div class="stat-bar-bg"><div class="stat-bar stat-bst" style="width: ${Math.min(100, pokemon.bst / 720 * 100)}%"></div></div></div>
             </div>
             <div class="abilities-row">
               <span class="ability-chip">${pokemon.abilities.primary}</span>
