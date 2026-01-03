@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FF7 × Pokemon - Midgar Region</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand">MIDGAR</div>
+      <div class="main-tabs">
+        <button class="main-tab active" data-tab="pokemon">Pokémon</button>
+        <button class="main-tab" data-tab="abilities">Abilities</button>
+        <button class="main-tab" data-tab="moves">Moves</button>
+        <button class="main-tab" data-tab="todo">Todo</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1 class="hero-title">FF7 × Cobblemon</h1>
+      <p class="hero-subtitle">Final Fantasy VII inspired forms with unique Limit Break mechanics</p>
+    </section>
+
+    <div class="tab-panel active" id="panel-pokemon">
+      <div class="panel-header">
+        <div class="panel-label">Forms</div>
+        <h2 class="panel-title">Pokémon<span class="panel-count" id="pokemon-count"></span></h2>
+      </div>
+      <div class="pokemon-grid" id="pokemon-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-abilities">
+      <div class="panel-header">
+        <div class="panel-label">Mechanics</div>
+        <h2 class="panel-title">Abilities<span class="panel-count" id="abilities-count"></span></h2>
+      </div>
+      <div class="abilities-grid" id="abilities-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-moves">
+      <div class="panel-header">
+        <div class="panel-label">Attacks</div>
+        <h2 class="panel-title">Moves<span class="panel-count" id="moves-count"></span></h2>
+      </div>
+      <div class="moves-grid" id="moves-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-todo">
+      <div class="panel-header">
+        <div class="panel-label">Planned</div>
+        <h2 class="panel-title">Todo<span class="panel-count" id="todo-count"></span></h2>
+      </div>
+      <div class="todo-list" id="todo-list"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="feedback-box">
+      <div class="feedback-title">Looking for Feedback</div>
+      <p class="feedback-text">Share thoughts on balance, design, and which FF7 characters should get forms next.</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="datatodo.js"></script>
+  <script>
+    document.querySelectorAll('.main-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+        tab.classList.add('active');
+        document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+      });
+    });
+
+    function renderPokemon() {
+      const grid = document.getElementById('pokemon-grid');
+      document.getElementById('pokemon-count').textContent = `(${FF7_DATA.pokémon.length})`;
+
+      FF7_DATA.pokémon.forEach(pokemon => {
+        const card = document.createElement('div');
+        card.className = 'pokemon-card';
+
+        const types = pokemon.types.map(t =>
+          `<span class="type-badge" style="background:${FF7_DATA.typeColors[t]}">${t}</span>`
+        ).join('');
+
+        const learnsetMoves = pokemon.learnset.map(move => {
+          const isSignature = pokemon.signatureMoves.includes(move);
+          return `<span class="learnset-move ${isSignature ? 'signature' : ''}">${move}</span>`;
+        }).join('');
+
+        const imageHTML = pokemon.image
+          ? `<img src="${pokemon.image}" alt="${pokemon.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+             <span style="display:none;color:var(--text-dim);font-size:0.7rem;text-align:center;">(model not implemented)</span>`
+          : `<span style="color:var(--text-dim);font-size:0.7rem;text-align:center;">(model not implemented)</span>`;
+
+        card.innerHTML = `
+          <div class="pokemon-card-header">
+            <div class="pokemon-image">${imageHTML}</div>
+            <div class="pokemon-info">
+              <div class="pokemon-name-row">
+                <div class="pokemon-name">${pokemon.name}</div>
+                <div class="pokemon-dex-num">#${pokemon.dexNumber}</div>
+              </div>
+              <div class="pokemon-meta">${pokemon.baseForm} Form · <span>${pokemon.inspiration}</span></div>
+              <div class="type-row">${types}</div>
+            </div>
+          </div>
+          <div class="pokemon-card-body">
+            <div class="stats-grid">
+              <div class="stat-box"><div class="stat-box-label">HP</div><div class="stat-box-value">${pokemon.baseStats.hp}</div></div>
+              <div class="stat-box"><div class="stat-box-label">Atk</div><div class="stat-box-value">${pokemon.baseStats.attack}</div></div>
+              <div class="stat-box"><div class="stat-box-label">Def</div><div class="stat-box-value">${pokemon.baseStats.defense}</div></div>
+              <div class="stat-box"><div class="stat-box-label">SpA</div><div class="stat-box-value">${pokemon.baseStats.spAttack}</div></div>
+              <div class="stat-box"><div class="stat-box-label">SpD</div><div class="stat-box-value">${pokemon.baseStats.spDefense}</div></div>
+              <div class="stat-box bst"><div class="stat-box-label">Total</div><div class="stat-box-value">${pokemon.bst}</div></div>
+            </div>
+            <div class="abilities-row">
+              <span class="ability-chip">${pokemon.abilities.primary}</span>
+              <span class="ability-chip">${pokemon.abilities.secondary}</span>
+              <span class="ability-chip hidden">${pokemon.abilities.hidden}</span>
+            </div>
+            <div class="pokemon-dex-entry">${pokemon.pokedex[0]}</div>
+            <button class="learnset-toggle" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open');">
+              <span>Learnset <span class="learnset-count">(${pokemon.learnset.length} moves)</span></span>
+              <span class="learnset-toggle-icon">▼</span>
+            </button>
+            <div class="learnset-content">
+              <div class="learnset-grid">${learnsetMoves}</div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderAbilities() {
+      const grid = document.getElementById('abilities-grid');
+      document.getElementById('abilities-count').textContent = `(${FF7_DATA.abilities.length})`;
+
+      FF7_DATA.abilities.forEach(ability => {
+        const card = document.createElement('div');
+        card.className = 'ability-card';
+
+        const transforms = ability.movePairs.map(p => `
+          <div class="transform-item">
+            <span class="transform-base">${p.base}</span>
+            <span class="transform-arrow">→</span>
+            <span class="transform-result">${p.enhanced}</span>
+          </div>
+        `).join('');
+
+        card.innerHTML = `
+          <div class="ability-name">${ability.name}</div>
+          <div class="ability-desc">${ability.longDescription}</div>
+          <div class="mechanic-box">
+            <div class="mechanic-title">How It Works</div>
+            <div class="mechanic-steps">
+              <div class="mechanic-step">
+                <div class="mechanic-step-num">1</div>
+                <div class="mechanic-step-text">Enter battle</div>
+              </div>
+              <div class="mechanic-step">
+                <div class="mechanic-step-num">2</div>
+                <div class="mechanic-step-text">Charge each turn</div>
+              </div>
+              <div class="mechanic-step">
+                <div class="mechanic-step-num">3</div>
+                <div class="mechanic-step-text">Moves transform</div>
+              </div>
+            </div>
+            <div class="transform-list">${transforms}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderMoves() {
+      const grid = document.getElementById('moves-grid');
+      document.getElementById('moves-count').textContent = `(${FF7_DATA.moves.length})`;
+
+      FF7_DATA.moves.forEach(move => {
+        const card = document.createElement('div');
+        card.className = `move-card ${move.limitBreak ? 'limit-move' : ''}`;
+
+        let transform = '';
+        if (move.transformsTo) transform = `<div class="move-transform">→ Becomes ${move.transformsTo}</div>`;
+        else if (move.transformsFrom) transform = `<div class="move-transform">← From ${move.transformsFrom}</div>`;
+
+        card.innerHTML = `
+          <div class="move-header">
+            <span class="move-name">${move.name}</span>
+            ${move.limitBreak ? '<span class="limit-tag">Limit</span>' : ''}
+          </div>
+          <div class="move-stats">
+            <span class="type-badge" style="background:${FF7_DATA.typeColors[move.type]}">${move.type}</span>
+            <span class="category-badge cat-${move.category.toLowerCase()}">${move.category}</span>
+            <div class="move-stat"><span class="move-stat-label">Pwr</span><span class="move-stat-value">${move.power}</span></div>
+            <div class="move-stat"><span class="move-stat-label">Acc</span><span class="move-stat-value">${move.accuracy}</span></div>
+            <div class="move-stat"><span class="move-stat-label">PP</span><span class="move-stat-value">${move.pp}</span></div>
+          </div>
+          <p class="move-desc">${move.description}</p>
+          ${move.effect ? `<div class="move-effect">${move.effect}</div>` : ''}
+          ${transform}
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderTodo() {
+      const list = document.getElementById('todo-list');
+      document.getElementById('todo-count').textContent = `(${TODO_DATA.items.length})`;
+
+      TODO_DATA.items.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'todo-item';
+        el.innerHTML = `
+          <div class="todo-text">${item}</div>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPokemon();
+      renderAbilities();
+      renderMoves();
+      renderTodo();
+    });
+  </script>
+</body>
+</html>
