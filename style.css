@@ -680,27 +680,6 @@ footer {
   margin-top: 60px;
 }
 
-.feedback-box {
-  max-width: 450px;
-  margin: 0 auto;
-  padding: 24px;
-  background: var(--surface);
-  border: 1px dashed rgba(0, 255, 136, 0.3);
-  border-radius: 12px;
-}
-
-.feedback-title {
-  font-family: 'Inknut Antiqua', serif;
-  font-weight: 700;
-  color: var(--mako);
-  margin-bottom: 6px;
-}
-
-.feedback-text {
-  font-size: 0.9rem;
-  color: var(--text-dim);
-}
-
 .todo-list {
   display: flex;
   flex-direction: column;
